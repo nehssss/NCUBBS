@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" th:with="title='首页',active='index'"
+	  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+	  xmlns:bb="">
+<!-- head 头部-->
+<head th:replace="web/common/fragment::head(${title},null,'')"></head>
+	<body>
+
+		<div th:replace="web/layout/header::header(${active})"></div>
+		<div class="javabb-menu-fixed"></div>
+		<!--	main	-->
+		<div class="javabb-main">
+			<div th:replace="web/common/template::notice(${listNotices})"></div>
+			<!--	banner begin	-->
+			 <div class="layui-row layui-col-space15">
+				<div class="javabb-panel">
+					<div class="javabb-panel-body banner layui-clear">
+						<div class="left">
+							<div class="layui-carousel" id="supportResource">
+							  <div carousel-item="">
+								<a class="bbs-slider-item" th:if="${not #lists.isEmpty(mapListPost.imagePosts)}" th:each="article:${mapListPost.imagePosts}"
+									th:style="'background-image:url('+${article.coverImage}+');'" th:href="'/post/'+${article.postId}">
+									<p th:text="${article.postTitle}"></p>
+								</a>
+							  </div>
+							</div>
+						</div>
+						<div class="center">
+							<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+							  <ul class="layui-tab-title">
+								<li class="layui-this">最新发布</li>
+								<li>最新回复</li>
+								<li>热门排行</li>
+								<li>精品帖子</li>
+							  </ul>
+							  <div class="layui-tab-content" style="height: 100px;">
+								  <!--最新发布-->
+								<div class="layui-tab-item post layui-show ">
+									<li th:if="${not #lists.isEmpty(mapListPost.newPosts)}" th:each="article:${mapListPost.newPosts}">
+										<span class="type" th:text="'['+${article.catalog?.catalogName}+']'">unknow</span>
+										<a th:href="'/post/'+${article.postId}" th:text="${article.postTitle}">unknow</a>
+										<span th:replace="web/common/template::mark(${article})"></span>
+										<span class="date" th:text="${#dates.format(article.createTime,'yy-MM-dd')}">19-12-01</span>
+									</li>
+									<div th:if="${#lists.isEmpty(mapListPost.newPosts)}" class="fly-none">暂时没有帖子</div>
+								</div>
+								  <!--最新回复-->
+								<div class="layui-tab-item post">
+									<li th:if="${not #lists.isEmpty(mapListPost.commentPosts)}" th:each="article:${mapListPost.commentPosts}">
+										<a th:href="'/post/'+${article.postId}" th:text="${article.postTitle}">unknow</a>
+										<span class="date" th:text="${#dates.format(article.createTime,'yy-MM-dd')}">19-12-01</span>
+										<span th:replace="web/common/template::mark(${article})"></span>
+									</li>
+									<div th:if="${#lists.isEmpty(mapListPost.commentPosts)}" class="fly-none">暂时没有帖子</div>
+								</div>
+								  <!--热门排行-->
+								<div class="layui-tab-item post">
+
+									<li th:if="${not #lists.isEmpty(mapListPost.hotPosts)}" th:each="article:${mapListPost.hotPosts}">
+										<span class="type" th:text="热门" style="color: red;font-weight: 600;">unknow</span>
+										<a th:href="'/post/'+${article.postId}" th:text="${article.postTitle}">unknow</a>
+										<span th:replace="web/common/template::mark(${article})"></span>
+										<span class="date" th:text="${article.clickCount}">99999</span>
+									</li>
+									<div th:if="${#lists.isEmpty(mapListPost.hotPosts)}" class="fly-none">暂时没有帖子</div>
+								</div>
+								  <!--精品帖子-->
+								<div class="layui-tab-item post">
+									<li th:if="${not #lists.isEmpty(mapListPost.supportPosts)}" th:each="article:${mapListPost.supportPosts}">
+										<span class="type" th:text="'['+${article.catalog.catalogName}+']'">unknow</span>
+										<a th:href="'/post/'+${article.postId}" th:text="${article.postTitle}">unknow</a>
+										<span th:replace="web/common/template::mark(${article})"></span>
+										<!--<span class="date layui-badge layui-bg-red">精</span>-->
+									</li>
+									<div th:if="${#lists.isEmpty(mapListPost.supportPosts)}" class="fly-none">暂时没有帖子</div>
+								</div>
+							  </div>
+							</div>
+
+						</div>
+						<div class="right">
+							<div class="title"><strong>用户排名</strong></div>
+							<div class="rank">
+								<li th:each="user,userStat:${rankUsers}">
+									<span th:if="${userStat.count<4}" th:class="'number'+${userStat.count}" th:text="${userStat.count}"></span>
+									<span th:if="${userStat.count>3}" class="number" th:text="${userStat.count}"></span>
+									<img th:src="${thUtil.formatUserImage(user.userImg)}" />
+									<a th:href="'/user/'+${user.id}" th:text="${user.nickName}">unknow</a>
+									<span class="rank-fenshu" th:text="${user.credits==null?0:user.credits}">999</span>
+								</li>
+							</div>
+						</div>
+					</div>
+				</div>
+			 </div>
+		  <!--	banner end	-->
+		  <!--	count begin	-->
+		  <div th:replace="web/layout/common::count"></div>
+		  <!--	count end	-->
+		  <!--	lanmu begin	-->
+		  <div class="layui-row clear layui-col-space15">
+		  	<div class="javabb-panel clear" th:each="pCatalog:${catalogs}">
+				<th:block th:if="${pCatalog.parentId==0 and not #lists.isEmpty(pCatalog.children)}">
+		  		<div class="javabb-panel-header" th:style="${'color:'+pCatalog.titleColor ?:'#fff'}">
+					<strong th:text="${pCatalog.catalogName}">栏目展示分类</strong>
+		  		</div>
+		  		<div class="javabb-panel-body clear lanmu-panel">
+		  			<li th:each="cCatalog:${pCatalog.children}">
+						<a th:href="${thUtil.catalog_url(cCatalog.catalogId)}" target="_self">
+							<div class="top clear">
+								<div class="left">
+									<img th:src="${cCatalog.catalogImage ?:'/assets/images/portal_user_img.png'}" class="avatar opacity"></div>
+									<div class="right">
+										<div class="title" th:style="${'color:'+cCatalog.titleColor ?:'#fff'}">
+											<th:block th:text="${cCatalog.catalogName}">栏目名称</th:block>
+											<th:block th:if="${(cCatalog.todayPostCount+cCatalog.todayCommentCount)>0}"><span class="layui-badge-dot tip" title="今日有内容更新"></span></th:block>
+										</div>
+										<div class="desc"><p th:text="${cCatalog.catalogDesc}">栏目描述，javabb天下无敌</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						<div class="bottom">
+							<span>今日：<i th:text="${cCatalog.todayPostCount+cCatalog.todayCommentCount}">999</i></span>
+							<span>帖子：<i th:text="${cCatalog.postCount ?:'0'}">999</i></span>
+							<span>互动：<i th:text="${cCatalog.commentCount ?:'0'}">9999</i></span>
+							<a th:href="${thUtil.catalog_url(cCatalog.catalogId)}" target="_self">点击进入</a>
+						</div>
+					</li>
+		  		</div>
+				</th:block>
+		  	</div>
+
+		  </div>
+		  <!--	lanmu end	-->
+		  <!--	friendLink begin	-->
+		  <div th:replace="web/layout/common::friend-link"></div>
+		  <!--	friendLink end	-->
+		</div>
+		<!--	contianer end	-->
+<!--	底部版权		-->
+<div th:replace="web/layout/footer::footer"></div>
+<!--	搜索		-->
+<div th:replace="web/layout/common::pop-search"></div>
+<!--	右边工具栏	-->
+<div th:replace="web/layout/common::right-bar"></div>
+<!--	引入JS	-->
+<div th:replace="web/common/fragment::js"></div>
+<script type="text/javascript">
+    /*<![CDATA[*/
+	layui.use(['carousel','element'],function(){
+		var carousel = layui.carousel;
+		var element = layui.element;
+		//图片轮播
+	  carousel.render({
+	    elem: '#supportResource'
+	    ,width:'100%'
+	    ,height: '280px'
+	    ,interval: 5000
+	    ,arrow: 'hover'
+		,anim: 'fade'
+	  });
+	});
+    /*]]>*/
+</script>		
+	</body>
+</html>

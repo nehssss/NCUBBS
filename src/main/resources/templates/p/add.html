@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+  <title th:text="${'发布帖子 '+@environment.getProperty('site.main.titleInfo')}">${@environment.getProperty('clientId')}</title>
+  <link rel="stylesheet" href="/css/community.css">
+<!--  <link rel="stylesheet" href="/css/myeditor.css?v=1.3">-->
+  <link rel="stylesheet" href="/editor/css/editormd.css" />
+  <th:block th:insert="~{common/header :: head}"></th:block>
+  <script src="/js/community.js" type="application/javascript"></script>
+  <script src="/js/moment.js" type="application/javascript"></script>
+</head>
+<body>
+
+<div th:insert="~{common/header :: nav}"></div>
+
+<div class="layui-container fly-marginTop">
+  <div class="fly-panel" pad20 style="padding-top: 5px;">
+    <!--<div class="fly-none">没有权限</div>-->
+    <div class="layui-form layui-form-pane">
+      <div class="layui-tab layui-tab-brief" lay-filter="user">
+        <ul class="layui-tab-title">
+          <li class="layui-this">发表新帖                <span class="layui-bg-red" th:if="${error!=null}" th:text="${error}" id="error"></span></li>
+        </ul>
+        <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+          <div class="layui-tab-item layui-show">
+            <form action="/p/publish" method="post">
+              <div class="layui-row layui-col-space15 layui-form-item">
+                <input type="hidden" name="id" th:value="${id}">
+
+                <div class="">
+                  <label for="title" class="layui-form-label">标题</label>
+                  <div class="layui-input-block">
+                    <input type="text" id="title" name="title" required lay-verify="required" autocomplete="off" class="layui-input" th:value="${title}">
+                    <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
+                  </div>
+                </div>
+              </div>
+              <div class="layui-row layui-col-space15 layui-form-item layui-hide" id="LAY_quiz">
+                <div class="layui-col-md3">
+                  <label class="layui-form-label">所属产品</label>
+                  <div class="layui-input-block">
+                    <select name="project">
+                      <option></option>
+                      <option value="layui">layui</option>
+                      <option value="独立版layer">独立版layer</option>
+                      <option value="独立版layDate">独立版layDate</option>
+                      <option value="LayIM">LayIM</option>
+                      <option value="Fly社区模板">Fly社区模板</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="layui-col-md3">
+                  <label class="layui-form-label" for="L_version">版本号</label>
+                  <div class="layui-input-block">
+                    <input type="text" id="L_version" value="" name="version" autocomplete="off" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-col-md6">
+                  <label class="layui-form-label" for="L_browser">浏览器</label>
+                  <div class="layui-input-block">
+                    <input type="text" id="L_browser"  value="" name="browser" placeholder="浏览器名称及版本，如：IE 11" autocomplete="off" class="layui-input">
+                  </div>
+                </div>
+              </div>
+              <div class="layui-form-item layui-form-text" style="width: 90%; height: 320px;">
+
+                <div id="editor" >
+<!--                  <p id="descriptionP" th:text="${description}"></p>-->
+
+                <textarea name="description" id="description"
+
+
+                          th:text="${description}"
+                ></textarea><!--                          class="form-control"-->
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-upload" id="test2" th:style="${fileId==-1 || fileId==null } ? '': 'display:none'">
+                  <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                  <button type="button" class="layui-btn" id="test9" >开始上传</button>
+                </div>
+                <div th:style="${fileId!=-1 && fileId!=null } ? '': 'display:none'" id="test1">
+                  <input type="hidden" name="fileId" id="fileId" th:value="${fileId}">
+<!--                  <input name="fileName" id="fileName" th:value="${fileName}">-->
+                  <a name="fileName" id="fileName" th:href="${fileUrl}" style="display: block; width: 100px;height: 20px; float: left">
+                    <input  readonly id="fileName1" th:value="${fileUrl}"  style="height: 20px ; display: block; border: none; "/>
+                    </a>
+                  <button type="button" class="layui-btn" id="delFile" name="delFile"> 删除文件</button>
+                </div>
+              </div>
+
+              <div class="layui-form-item ">
+                <div class="form-group" >
+                  <label for="description">添加标签:</label>
+                  <input type="text" name="tag" id="tag" class="form-control layui-input"
+                         placeholder="输入标签，以英文逗号,分割" aria-describedby="sizing-addon1"
+                         th:value="${tag}" autocomplete="off" required
+                         onclick="showSelectTag()">
+                  <div id="select-tag" class="layui-tab publish-tag-tab">
+                    <ul class="layui-tab-title" role="tablist">
+                      <li role="presentation" th:each="selectCategory,selectCategoryStat: ${tags}"
+                          th:class="${selectCategoryStat.first ? 'layui-this':''}">
+                        <a th:href="${'#'+selectCategory.categoryName}" aria-controls="home" role="tab"
+                           data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
+                      </li>
+                    </ul>
+                    <div class="layui-tab-content" >
+                      <div role="tabpanel" th:id="${selectCategory.categoryName}"
+                           th:each="selectCategory: ${tags}"
+                           th:class="${selectCategoryStat.first ? 'layui-tab-item layui-show':'layui-tab-item'}">
+                        <th:block  th:each="selectTag: ${selectCategory.tags}">
+                                    <span class="community-tag" onclick="selectTag(this)"
+                                          th:data-tag="${selectTag}"
+                                          th:text="${' '+selectTag}">
+                                    </span>
+                        </th:block>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="layui-form-item" >
+                <label class="layui-form-label">所在专栏</label>
+                <div class="layui-input-block" style="width: 190px;">
+                  <select lay-verify="required" id="column2" name="column2" lay-filter="column" >
+                    <option></option>
+                    <option value="1" th:selected="${column2==1}">前端开发</option>
+                    <option value="2" th:selected="${column2==2}" >后端开发</option>
+                    <option value="3" th:selected="${column2==3}">移动开发</option>
+                    <option value="4" th:selected="${column2==4}">计算机基础</option>
+                    <option value="5" th:selected="${column2==5}">前沿技术</option>
+                    <option value="6" th:selected="${column2==6}">测试运维</option>
+                    <option value="8" th:selected="${column2==7}">更多方向</option>
+                    <option th:if="${loginUser!=null&&loginUser.groupId>=3}" th:selected="${column2==8}" value="8">公告</option>
+                  </select>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">阅读权限</label>
+                  <div class="layui-input-inline" style="width: 190px;">
+                    <select lay-verify="required" id="permission" name="permission">
+                      <option value="0" th:selected="${permission==null||permission==0}">默认，所有用户可见</option>
+                      <option value="1" th:selected="${permission==1}">学生及以上用户可见</option>
+                      <option value="2"th:selected="${permission==2}">老师及以上用户可见</option>
+                      <option value="3"th:selected="${permission==3}">管理员及以上用户可见</option>
+                    </select>
+                  </div>
+                  <div class="layui-form-mid layui-word-aux">除非有重要信息，不然建议设置所有用户可见</div>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn"  lay-submit>立即发布</button>
+                <span class="layui-bg-red" th:if="${error!=null}" th:text="${error}" id="error"></span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:insert="~{common/footer :: foot}"></th:block>
+<!--<script type="text/javascript" src="/js/wangEditor3.min.js?v=1.92"></script>-->
+<!--<script src="/js/myeditor.min.js?v=1.5"></script>-->
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="/editor/editormd.min.js"></script>
+<script src="/layui/layui.js"></script>
+<script type="text/javascript">
+  $(function() {
+    var editor = editormd("editor", {
+      // width  : "100%",
+      // height : "100%",
+      path: "/editor/lib/",
+      imageUpload: true,
+      imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+      imageUploadURL: "/file/upload",
+    });
+  });
+</script>
+<script>
+layui.cache.page = 'jie';
+layui.cache.user = {
+  username: '游客'
+  ,uid: -1
+  ,avatar: '/images/avatar/00.jpg'
+  ,experience: 83
+  ,sex: '男'
+};
+layui.config({
+  version: "3.0.0"
+  ,base: '/mods/'
+}).extend({
+  fly: 'index'
+}).use('fly');
+/*
+layui.use('code', function(){ //加载code模块
+  layui.code({
+    elem: 'pre', //默认值为.layui-code
+    height:500,
+    about: false,
+  }); //引用code方法
+});*/
+</script>
+<script>
+  layui.use(['upload', 'element', 'layer'], function() {
+    var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element
+            , layer = layui.layer;
+    //选完文件后不自动上传
+    upload.render({
+      elem: '#test8'
+      , url: '/file/project/upload' //改成您自己的上传接口
+      , auto: false
+      ,method:'post'
+      ,accept: 'file' //普通文件
+      ,exts: 'zip|rar|7z' //只允许上传压缩文件
+      //,multiple: true
+      , bindAction: '#test9'
+      , done: function (res) {
+
+        layer.msg('上传成功');
+        console.log(res.fileName);
+        $('#test2').attr("style", "display:none;");
+        $('#test1').attr("style", "display:block;");
+        $('#fileId').attr("value",res.id);
+        $('#fileName').attr({"text":res.fileName, "href":res.fileUrl});
+        $('#fileName1').attr({"value":res.fileName});
+        // $('#fileName').attr("href",res.fileUrl);
+      }
+    });
+  })
+</script>
+<script>
+  $('#delFile').click(function(){
+    var fileId={"fileId":$('#fileId').val()};
+    $.ajax({
+      url: '/file/project/delFile'
+      ,method:'post'
+      ,data:fileId
+      ,datatype:"json"
+      ,success:function (res) {
+        if(res.code==200) {
+          swal(res.message);
+          $('#test2').attr("style", "display:block;");
+          $('#test1').attr("style", "display:none;");
+          $('#fileId').attr("value", -1);
+          $('#fileName').attr({"text":null, "href":null});
+          $('#fileName1').attr({"value":null});
+          // $('#fileName').attr("href", null);
+        }
+      }
+
+    })
+  })
+
+</script>
+</body>
+</html>

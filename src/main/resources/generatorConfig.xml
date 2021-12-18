@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc"
+                        userId="数据库账号"
+                        password="数据库密码">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.haitaos.finallbbs.model" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.haitaos.finallbbs.mapper"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <table tableName="project" domainObjectName="Project"></table>
+        <!--        <table tableName="user" domainObjectName="User"></table>-->
+        <!--        <table tableName="question" domainObjectName="Question"></table>-->
+        <!--        <table tableName="comment" domainObjectName="Comment"></table>-->
+        <!--        <table tableName="notification" domainObjectName="Notification"></table>-->
+        <!--        <table tableName="thumb" domainObjectName="Thumb"></table>-->
+        <!--        <table tableName="ad" domainObjectName="Ad"></table>-->
+        <!--        <table tableName="user_info" domainObjectName="UserInfo"></table>-->
+        <!--        <table tableName="user_account" domainObjectName="UserAccount"></table>-->
+        <!--        -->
+        <!--        <table tableName="news" domainObjectName="News">-->
+        <!--            <columnOverride column="description" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+        <!--            <columnOverride column="html" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+        <!--        </table>-->
+
+
+    </context>
+</generatorConfiguration>

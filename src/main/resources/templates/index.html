@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- head 头部-->
+<head>
+
+
+
+<!--	<link rel="shortcut icon" th:href="@{/assets/images/javabb_favicon.png}" type="image/x-icon">-->
+	<link rel="stylesheet" th:href="@{/assets/libs/layui/css/layui.css}"/>
+<!--	<link rel="stylesheet" th:href="@{/assets/module/admin.css}"/>-->
+	<link rel="stylesheet" th:href="@{/assets/css/global.css}"/>
+	<link rel="stylesheet" href="http://at.alicdn.com/t/font_1535126_ruv2blliok.css"/>
+
+
+	<meta name="baidu-site-verification" th:content="${@environment.getProperty('baidu.site.verification')}"  />
+	<meta name="sogou_site_verification" th:content="${@environment.getProperty('sogou.site.verification')}"/>
+	<meta name="baidu_union_verify" th:content="${@environment.getProperty('baidu.union.verify')}">
+	<th:block th:insert="~{common/header :: head}"></th:block>
+	<link rel="stylesheet" href="/css/community.css">
+	<title th:text="${@environment.getProperty('site.main.title')}"></title>
+</head>
+	<body>
+
+	<div th:insert="~{common/header :: nav}"></div>
+		<!--	main	-->
+		<div class="javabb-main" style="margin-top: 2%">
+			<!--	banner begin	-->
+		  <div class="layui-row layui-col-space15">
+		    <div class="javabb-panel">
+		    	<div class="javabb-panel-body banner layui-clear">
+		    		<div class="left">
+		    			<div class="layui-carousel" id="supportResource">
+							<div carousel-item="">
+							<a style="height: 280px;" class="bbs-slider-item" th:if="${not #lists.isEmpty(mapListPost.imagePosts)}" th:each="article:${mapListPost.imagePosts}"
+							   th:href="'/p/'+${article.id}">
+								<img style="width: 100%;height: 280px;max-height: 280px" src="./images/announce.png" alt="">
+								<p style="width: 95%" th:text="${article.title}"></p>
+							</a>
+							</div>
+						</div>
+		    		</div>
+
+		    		<div class="center">
+		    			 
+						<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+						  <ul class="layui-tab-title">
+						    <li class="layui-this">最新发布</li>
+						    <li>最新回复</li>
+						    <li>热门排行</li>
+						    <li>精品帖子</li>
+						  </ul>
+						  <div class="layui-tab-content" style="height: 100px;">
+							  <div class="layui-tab-item post layui-show ">
+								  <li th:if="${not #lists.isEmpty(mapListPost.newQuestions)}" th:each="article:${mapListPost.newQuestions}">
+<!--									  <span class="type" th:text="'['+${article.catalog?.catalogName}+']'">unknow</span>-->
+
+									  <span class="type" th:if="${article.column2==1}">[前端开发]</span>
+									  <span class="type" th:if="${article.column2==2}">[后端开发]</span>
+									  <span class="type" th:if="${article.column2==3}">[移动开发]</span>
+									  <span class="type" th:if="${article.column2==4}">[计算机基础]</span>
+									  <span class="type" th:if="${article.column2==5}">[前沿技术]</span>
+									  <span class="type" th:if="${article.column2==6}">[测试运维]</span>
+									  <span class="type" th:if="${article.column2==7}">[更多方向]</span>
+									  <span class="type" th:if="${article.column2==8}">[公告]</span>
+									  <a th:href="'/p/'+${article.id}" th:text="${article.title}">unknow</a>
+<!--									  <span th:replace="web/common/template::mark(${article})"></span>-->
+									  <span class="date" th:text="${article.gmtModifiedStr}">19-12-01</span>
+								  </li>
+								  <div th:if="${#lists.isEmpty(mapListPost.newQuestions)}" class="fly-none">暂时没有帖子</div>
+							  </div>
+							  <div class="layui-tab-item post">
+								  <li th:if="${not #lists.isEmpty(mapListPost.newComments)}" th:each="article:${mapListPost.newComments}">
+									  <span class="type" th:if="${article.column2==1}">[前端开发]</span>
+									  <span class="type" th:if="${article.column2==2}">[后端开发]</span>
+									  <span class="type" th:if="${article.column2==3}">[移动开发]</span>
+									  <span class="type" th:if="${article.column2==4}">[计算机基础]</span>
+									  <span class="type" th:if="${article.column2==5}">[前沿技术]</span>
+									  <span class="type" th:if="${article.column2==6}">[测试运维]</span>
+									  <span class="type" th:if="${article.column2==7}">[更多方向]</span>
+									  <span class="type" th:if="${article.column2==8}">[公告]</span>
+									  <a th:href="'/p/'+${article.id}" th:text="${article.title}">unknow</a>
+									  <span class="date" th:text="${article.gmtLatestCommentStr}">19-12-01</span>
+<!--									  <span th:replace="web/common/template::mark(${article})"></span>-->
+								  </li>
+								  <div th:if="${#lists.isEmpty(mapListPost.newComments)}" class="fly-none">暂时没有帖子</div>
+							  </div>
+							  <div class="layui-tab-item post">
+								  <li th:if="${not #lists.isEmpty(mapListPost.hotQuestions)}" th:each="article:${mapListPost.hotQuestions}">
+									  <span class="type" th:if="${article.column2==1}">[前端开发]</span>
+									  <span class="type" th:if="${article.column2==2}">[后端开发]</span>
+									  <span class="type" th:if="${article.column2==3}">[移动开发]</span>
+									  <span class="type" th:if="${article.column2==4}">[计算机基础]</span>
+									  <span class="type" th:if="${article.column2==5}">[前沿技术]</span>
+									  <span class="type" th:if="${article.column2==6}">[测试运维]</span>
+									  <span class="type" th:if="${article.column2==7}">[更多方向]</span>
+									  <span class="type" th:if="${article.column2==8}">[公告]</span>
+									  <a th:href="'/p/'+${article.id}" th:text="${article.title}">unknow</a>
+									  <span class="date" th:text="${article.gmtModifiedStr}">19-12-01</span>
+									  <!--									  <span th:replace="web/common/template::mark(${article})"></span>-->
+								  </li>
+								  <div th:if="${#lists.isEmpty(mapListPost.hotQuestions)}" class="fly-none">暂时没有帖子</div>
+							  </div>
+							  <div class="layui-tab-item post">
+								  <li th:if="${not #lists.isEmpty(mapListPost.goodQuestions)}" th:each="article:${mapListPost.goodQuestions}">
+									  <span class="type" th:if="${article.column2==1}">[前端开发]</span>
+									  <span class="type" th:if="${article.column2==2}">[后端开发]</span>
+									  <span class="type" th:if="${article.column2==3}">[移动开发]</span>
+									  <span class="type" th:if="${article.column2==4}">[计算机基础]</span>
+									  <span class="type" th:if="${article.column2==5}">[前沿技术]</span>
+									  <span class="type" th:if="${article.column2==6}">[测试运维]</span>
+									  <span class="type" th:if="${article.column2==7}">[更多方向]</span>
+									  <span class="type" th:if="${article.column2==8}">[公告]</span>
+									  <a th:href="'/p/'+${article.id}" th:text="${article.title}">unknow</a>
+									  <span class="date" th:text="${article.gmtModifiedStr}">19-12-01</span>
+									  <!--									  <span th:replace="web/common/template::mark(${article})"></span>-->
+								  </li>
+								  <div th:if="${#lists.isEmpty(mapListPost.goodQuestions)}" class="fly-none">暂时没有帖子</div>
+							  </div>
+						  </div>
+						</div> 
+		    			
+		    		</div>
+		    		<div class="right">
+		    			<div class="javabb-panel-header"><strong>用户排名</strong></div>
+		    			<div class="rank">
+		    				<li th:if="${not #lists.isEmpty(mapListPost.goodMans)}" th:each="man:${mapListPost.goodMans}">
+<!--		    					<span class="number1">1.</span>-->
+		    					<img th:src="${man.avatarUrl}" />
+		    					<a href="#" th:text="${man.name}">admin</a>
+		    					<span class="rank-fenshu" th:text="${man.userAccount.score3}">132</span>
+		    				</li>
+
+		    			</div>
+		    		</div>
+		    	</div>
+		    </div>
+		  </div>
+		  <!--	banner end	-->
+		  <!--	count begin	-->
+<!--		  <div th:replace="web/layoutbbs::count"></div>-->
+		  <!--	count end	-->
+		  <!--	lanmu begin	-->
+		  <div class="layui-row clear layui-col-space15">
+		  	<div class="javabb-panel clear">
+		  		<div class="javabb-panel-header">
+		  			计算机
+		  		</div>
+		  		<div class="javabb-panel-body clear lanmu-panel">
+
+		  			<li>
+						<a href="/show?column=1" target="_blank">
+						<div class="top clear">
+						<div class="left">
+						<img src="../assets/images/Column1.png" style="background-color: #f6f6f6;"></div>
+						<div class="right">
+						<div class="title">前端开发</div>
+						<div class="desc"><p>HTML5/Vue.js/Node.js</p>
+						</div>
+						</div>
+						</div>
+						</a>
+						<div class="bottom">
+						<span>帖子：<i th:text="${Column1}">625</i></span>
+						<a href="/show?column=1" target="_blank">点击进入</a>
+						</div>	
+						</li>
+		  			<li>
+						<a href="/show?column=2" target="_blank">
+						<div class="top clear">
+						<div class="left">
+						<img src="../assets/images/Column2.png" class="avatar opacity"></div>
+						<div class="right">
+						<div class="title">后端开发</div>
+						<div class="desc"><p>Java/Python/Go</p>
+						</div>
+						</div>
+						</div>	
+						</a>
+						<div class="bottom">
+
+						<span>帖子：<i th:text="${Column2}">625</i></span>
+						<a href="/show?column=2" target="_blank">点击进入</a>
+						</div>	
+						</li>
+		  			<li>
+						<a href="/show?column=3" target="_blank">
+						<div class="top clear">
+						<div class="left">
+						<img src="../assets/images/Column3.png" class="avatar opacity"></div>
+						<div class="right">
+						<div class="title">移动开发</div>
+						<div class="desc"><p>Flutter/Android/iOS</p>
+						</div>
+						</div>
+						</div>	
+						</a>
+						<div class="bottom">
+
+						<span>帖子：<i th:text="${Column3}">625</i></span>
+						<a href="/show?column=3" target="_blank">点击进入</a>
+						</div>	
+						</li>
+					<li>
+						<a href="/show?column=4" target="_blank">
+							<div class="top clear">
+								<div class="left">
+									<img src="../assets/images/Column4.png" class="avatar opacity"></div>
+								<div class="right">
+									<div class="title">计算机基础</div>
+									<div class="desc"><p>算法/数学/数据库</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						<div class="bottom">
+
+							<span>帖子：<i th:text="${Column4}">625</i></span>
+							<a href="/show?column=4" target="_blank">点击进入</a>
+						</div>
+					</li>
+					<li>
+						<a href="/show?column=5" target="_blank">
+							<div class="top clear">
+								<div class="left">
+									<img src="../assets/images/Column5.png" class="avatar opacity"></div>
+								<div class="right">
+									<div class="title">前沿技术</div>
+									<div class="desc"><p>AI/大数据/数据分析</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						<div class="bottom">
+
+							<span>帖子：<i th:text="${Column5}">625</i></span>
+							<a href="/show?column=5" target="_blank">点击进入</a>
+						</div>
+					</li>
+					<li>
+						<a href="/show?column=6" target="_blank">
+							<div class="top clear">
+								<div class="left">
+									<img src="../assets/images/Column6.png" class="avatar opacity"></div>
+								<div class="right">
+									<div class="title">测试运维</div>
+									<div class="desc"><p>自动化测试/容器</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						<div class="bottom">
+							<span>帖子：<i th:text="${Column6}">625</i></span>
+							<a ref="/show?column=6" target="_blank">点击进入</a>
+						</div>
+					</li>
+					<li>
+						<a href="/show?column=7" target="_blank">
+							<div class="top clear">
+								<div class="left">
+									<img src="../assets/images/Column7.png" style="background-color: #f6f6f6;"></div>
+								<div class="right">
+									<div class="title">更多方向</div>
+									<div class="desc"><p>产品设计/UI设计/游戏</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						<div class="bottom">
+							<span>帖子：<i th:text="${Column7}">625</i></span>
+							<a href="/show?column=7" target="_blank">点击进入</a>
+						</div>
+					</li>
+
+		  		</div>
+<!--		  		<div class="javabb-panel-header">-->
+<!--		  			栏目展示分类二-->
+<!--		  		</div>-->
+<!--		  		<div class="javabb-panel-body">-->
+<!--		  			斯蒂芬撒-->
+<!--		  		</div>-->
+		  	</div>
+		  </div>
+		  <!--	lanmu end	-->
+		  <!--	friendLink begin	-->
+<!--		  <div th:replace="web/layout/common::friend-link"></div>-->
+
+		  <!--	friendLink end	-->
+		</div>
+		<!--	contianer end	-->
+<!--	底部版权		-->
+	<th:block th:insert="~{common/footer :: foot}"></th:block>
+<!--	<script>-->
+<!--		layui.cache.page = 'index';-->
+<!--		layui.cache.user = {-->
+<!--			//username: '匿名用户'-->
+<!--			//,uid: -1-->
+<!--			//  ,avatar: '/images/avatar/00.jpg'-->
+<!--			name: '[[${loginUser!=null?loginUser.name:"匿名用户"}]]'-->
+<!--			,uid: [[${loginUser!=null?loginUser.id:-1}]]-->
+<!--			,avatar: '[[${loginUser!=null?loginUser.avatarUrl:"/images/avatar/default.png"}]]'-->
+<!--			,experience: 83-->
+<!--			,sex: '男'-->
+<!--		};-->
+<!--		layui.config({-->
+<!--			version: "3.0.0"-->
+<!--			,base: '/mods/'  //这里实际使用时，建议改成绝对路径-->
+<!--		}).extend({-->
+<!--			fly: 'index'-->
+<!--		}).use('fly');-->
+<!--	</script>-->
+<!--<div th:replace="web/layout/footer::footer"></div>-->
+<!--&lt;!&ndash;	搜索		&ndash;&gt;-->
+<!--<div th:replace="web/layout/common::pop-search"></div>-->
+<!--&lt;!&ndash;	右边工具栏	&ndash;&gt;-->
+<!--<div th:replace="web/layout/common::right-bar"></div>-->
+<!--&lt;!&ndash;	引入JS	&ndash;&gt;-->
+<!--<div th:replace="web/common/fragment::js"></div>-->
+	<script type="text/javascript">
+		/*<![CDATA[*/
+		layui.use(['carousel','element'],function(){
+			var carousel = layui.carousel;
+			var element = layui.element;
+			//图片轮播
+			carousel.render({
+				elem: '#supportResource'
+				,width:'100%'
+				,height: '280px'
+				,interval: 5000
+				,arrow: 'hover'
+				,anim: 'fade'
+			});
+		});
+		/*]]>*/
+	</script>
+
+<!--	<script>-->
+<
+<!--		layui.config({-->
+<!--			version: "3.0.0"-->
+<!--			,base: '/mods/'  //这里实际使用时，建议改成绝对路径-->
+<!--		}).extend({-->
+<!--			fly: 'index'-->
+<!--		}).use('fly');-->
+<!--	</script>-->
+<!--<script>    layui.config({-->
+<!--	version: "3.0.0"-->
+<!--	, base: '/mods/'  //这里实际使用时，建议改成绝对路径-->
+
+<!--}).extend({-->
+<!--	fly: 'index'-->
+<!--}).use('fly');-->
+<!--</script>-->
+	<script>
+		//layui.cache.page = 'index';
+		// layui.cache.user = {
+		//     //username: '匿名用户'
+		//     //,uid: -1
+		//     //  ,avatar: '/images/avatar/00.jpg'
+		//     name: '[[${loginUser!=null?loginUser.name:"匿名用户"}]]'
+		//     ,uid: [[${loginUser!=null?loginUser.id:-1}]]
+		//     ,avatar: '[[${loginUser!=null?loginUser.avatarUrl:"/images/avatar/default.png"}]]'
+		//     ,experience: 83
+		//     ,sex: '男'
+		// };
+		layui.config({
+			version: "3.0.0"
+			, base: '/mods/'  //这里实际使用时，建议改成绝对路径
+
+		}).extend({
+			fly: 'index'
+		}).use('fly');
+	</script>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+spring:
+  datasource:
+    url: jdbc
+    username: 数据库账号
+    password: 数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+  resources:
+    chain:
+      cache: true
+    cache:
+      period: 604800
+
+
+
+
+mybatis-plus:
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+
+site:
+  main:
+    title: 软件学院开源社区
+    titleInfo: 软件学院开源社区_NCU Open Scource
+    domain: 1.15.243.78
+#    beian: *
+    index: 1
+  home:
+    title: Ncuer
+  jwt:
+    secret: n2B69tcq2Uqpaax0y7BTJTgOypSueYOS
+  password:
+    salt: 9E02YYxmNlvknahTN4By2US0SZovxohM
+  meta:
+    author: 软件学院开源社区_NCU Open Scource
+    keywords: 软件学院开源社区_NCU Open Scource
+    description: 软件学院开源社区_NCU Open Scource
+
+  info:
+    contactQun: qq联系群
+   
+#    contactQunUrl: *
+
+
+#baidu:
+#  site:
+#    verification: *
+#
+#sogou:
+#  site:
+#    verification: *
+#
+#baidu:
+#  union:
+#    verify: ***
+#
+
+vaptcha:
+  vid: 自己找
+  key: 
+
+exmail:
+  account: qq邮箱
+  password: 密码
+  smtp:
+    host: smtp.qq.com
+
+baiducloud:
+  censor:
+    enable: 1
+    appid: 
+    apikey: 
+    secretkey: 
+
+qcloud:
+  secret-id: 
+  secret-key: 
+  ci:
+    enable: 1
+    objecturl: 
+  cos:
+    bucket-name: 
+    region: 
+    objecturl: 
+
+github:
+  client:
+    id: 
+    secret: 
+  redirect:
+    url: 
+
+user:
+  group:
+    r1: 学生
+    r2: 老师
+    r3: 管理员
+    r4: 站长

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haitaos.finallbbs.mapper.QuestionExtMapper">
+    <resultMap id="BaseResultMap" type="com.haitaos.finallbbs.model.Question">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="TITLE" jdbcType="VARCHAR" property="title"/>
+        <result column="GMT_CREATE" jdbcType="BIGINT" property="gmtCreate"/>
+        <result column="GMT_MODIFIED" jdbcType="BIGINT" property="gmtModified"/>
+        <result column="CREATOR" jdbcType="INTEGER" property="creator"/>
+        <result column="COMMENT_COUNT" jdbcType="INTEGER" property="commentCount"/>
+        <result column="VIEW_COUNT" jdbcType="INTEGER" property="viewCount"/>
+        <result column="LIKE_COUNT" jdbcType="INTEGER" property="likeCount"/>
+        <result column="TAG" jdbcType="VARCHAR" property="tag"/>
+    </resultMap>
+
+    <update id="incView" parameterType="com.haitaos.finallbbs.model.Question">
+    update question
+    set
+    VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
+    where id = #{id}
+    </update>
+
+    <update id="incCommentCount" parameterType="com.haitaos.finallbbs.model.Question">
+    update question
+    set
+    COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    where id = #{id}
+    </update>
+
+    <select id="selectRelated" parameterType="com.haitaos.finallbbs.model.Question" resultMap="BaseResultMap">
+        select * from question where id != #{id} and tag regexp #{tag} order by gmt_latest_comment desc limit 0,10
+    </select>
+
+    <select id="countBySearch" parameterType="com.haitaos.finallbbs.dto.QuestionDTO"
+            resultType="java.lang.Integer">
+        select count(*) from question
+        <where>
+            (status=0 OR status =1)
+            <if test="search != null and search != ''">
+                and title regexp #{search}
+            </if>
+            <if test="tag != null and tag != ''">
+                and tag regexp #{tag}
+            </if>
+            <if test="column2 != null and column2 != 0 ">
+                and column2 = #{column2}
+            </if>
+            <if test="sort != null and sort != '' and sort == 'no'">
+                and comment_count = 0
+            </if>
+            <if test="sort != null and sort != '' and sort == 'good'">
+                and status = 1
+            </if>
+            <if test="time != null and time != ''">
+                and gmt_create > #{time}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBySearch" parameterType="com.haitaos.finallbbs.dto.QuestionDTO"
+            resultMap="BaseResultMap">
+        select * from question
+        <where>
+            (status=0 OR status =1)
+            <if test="search != null and search != ''">
+                and title regexp #{search}
+            </if>
+            <if test="tag != null and tag != ''">
+                and tag regexp #{tag}
+            </if>
+            <if test="column2 != null and column2 != 0 ">
+                and column2 = #{column2}
+            </if>
+            <if test="sort != null and sort != '' and sort == 'no'">
+                and comment_count = 0
+            </if>
+            <if test="sort != null and sort != '' and sort == 'good'">
+                and status = 1
+            </if>
+            <if test="time != null and time != ''">
+                and gmt_create > #{time}
+            </if>
+        </where>
+        <if test="sort == null or sort == ''">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and sort == 'new'">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and sort == 'no'">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and sort == 'good'">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and (sort == 'hot' || sort == 'hot7' || sort == 'hot30')">
+            order by comment_count desc
+        </if>
+        limit #{offset},#{size}
+    </select>
+
+    <select id="selectTop" parameterType="com.haitaos.finallbbs.dto.QuestionDTO"
+            resultMap="BaseResultMap">
+        select * from question
+        <where>
+            (status=2 OR status =3)
+            <if test="search != null and search != ''">
+                and title regexp #{search}
+            </if>
+            <if test="tag != null and tag != ''">
+                and tag regexp #{tag}
+            </if>
+            <if test="column2 != null and column2 != 0 ">
+                and column2 = #{column2}
+            </if>
+            <if test="sort != null and sort != '' and sort == 'no'">
+                and comment_count = 0
+            </if>
+            <if test="sort != null and sort != '' and sort == 'good'">
+                and status = 3
+            </if>
+            <if test="sort != null and sort != '' and sort == 'good'">
+                order by gmt_latest_comment desc
+            </if>
+            <if test="time != null and time != ''">
+                and gmt_create > #{time}
+            </if>
+        </where>
+        <if test="sort == null or sort == ''">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and sort == 'new'">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and sort == 'no'">
+            order by gmt_latest_comment desc
+        </if>
+        <if test="sort != null and sort != '' and (sort == 'hot' || sort == 'hot7' || sort == 'hot30')">
+            order by comment_count desc
+        </if>
+    </select>
+
+
+
+    <select id="selectBySearchAll" parameterType="com.haitaos.finallbbs.dto.QuestionDTO"
+            resultMap="BaseResultMap">
+        select * from question
+        <where>
+
+            <if test="search != null and search != ''">
+                and title regexp #{search}
+            </if>
+            <!--       regexp是使用正则表达式     -->
+            <if test="start != null and start != ''">
+                and gmt_create >= #{start}
+            </if>
+            <if test="end != null and end != ''">
+                and #{end} >= gmt_create
+            </if>
+        </where>
+            order by gmt_latest_comment desc limit #{offset},#{size}
+    </select>
+
+    <select id="countBySearchAll" parameterType="com.haitaos.finallbbs.dto.QuestionDTO"
+            resultType="java.lang.Integer">
+        select count(*) from question
+        <where>
+            <!--       regexp是使用正则表达式     -->
+            <if test="start != null and start != ''">
+                and gmt_create >= #{start}
+            </if>
+            <if test="end != null and end != ''">
+                and #{end} >= gmt_create
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <select id="selectLatest" parameterType="java.lang.Integer"
+            resultType="com.haitaos.finallbbs.model.Question">
+        select  * from question order by gmt_modified desc limit 0,#{size}
+    </select>
+
+    <select id="selectLatestComment" parameterType="java.lang.Integer"
+            resultType="com.haitaos.finallbbs.model.Question">
+        select  * from question order by gmt_latest_comment desc limit 0,#{size}
+    </select>
+
+    <select id="selectHotQuestion" parameterType="java.lang.Integer"
+            resultType="com.haitaos.finallbbs.model.Question">
+        select  * from question order by like_count desc limit 0,#{size}
+    </select>
+
+
+
+    <select id="selectGoodQuestion" parameterType="java.lang.Integer"
+            resultType="com.haitaos.finallbbs.model.Question">
+        select  * from question where status=1 or status=3 order by like_count desc limit 0,#{size}
+    </select>
+
+    <select id="selectGoodMan" parameterType="java.lang.Integer"
+            resultType="java.lang.Long">
+       SELECT creator FROM `question` GROUP BY creator ORDER BY count(id) desc limit 0,#{size}
+    </select>
+</mapper>
