@@ -1,8 +1,8 @@
-# NEUBBS
+# NCUBBS
 
 ## Online Experience
 
-[NEUBBS](http://1.15.243.78:8080/index)
+[NCUBBS](http://1.15.243.78:8080/index)
 
 ## Technology Stack
 
